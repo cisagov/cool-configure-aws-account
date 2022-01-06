@@ -5,7 +5,7 @@ provider "aws" {
     tags = var.tags
   }
 
-  profile = "cool-master-administersso"
+  profile = var.sso_admin_profile
   region  = var.aws_region
 }
 
