@@ -57,6 +57,11 @@ resource "null_resource" "remove_user" {
   }
 
   provisioner "local-exec" {
-    command = "aws --profile cool-configure-aws-account --region ${var.aws_region} sso-admin delete-account-assignment --instance-arn ${data.aws_ssoadmin_permission_set.all[each.value.permission_set].instance_arn} --target-id ${each.value.account_id} --target-type AWS_ACCOUNT --permission-set-arn ${data.aws_ssoadmin_permission_set.all[each.value.permission_set].arn} --principal-type USER --principal-id ${data.aws_identitystore_user.all[each.value.user].user_id} | sed -n 's/.*\"RequestId\": \"\\(.*\\)\",/\\1/p' | xargs aws --profile cool-configure-aws-account --region ${var.aws_region} sso-admin describe-account-assignment-deletion-status --instance-arn ${data.aws_ssoadmin_permission_set.all[each.value.permission_set].instance_arn} --account-assignment-deletion-request-id"
+    # This command asks AWS to delete the specified permission set from the
+    # specified SSO user, then loops until the command completes.
+    # NOTE: This command requires the "aws" and "jq" tools be installed on
+    # your local system.  On macOS, these can be installed via:
+    #   brew install awscli jq
+    command = "REQUEST_ID=`aws --profile ${var.sso_admin_profile} --region ${var.aws_region} sso-admin delete-account-assignment --instance-arn ${data.aws_ssoadmin_permission_set.all[each.value.permission_set].instance_arn} --target-id ${each.value.account_id} --target-type AWS_ACCOUNT --permission-set-arn ${data.aws_ssoadmin_permission_set.all[each.value.permission_set].arn} --principal-type USER --principal-id ${data.aws_identitystore_user.all[each.value.user].user_id} | jq -r '.AccountAssignmentDeletionStatus.RequestId'` && echo RequestId=$REQUEST_ID && while [[ \"$STATUS\" != \"SUCCEEDED\" && \"$STATUS\" != \"FAILED\" ]]; do STATUS=`aws --profile ${var.sso_admin_profile} --region ${var.aws_region} sso-admin describe-account-assignment-deletion-status --instance-arn ${data.aws_ssoadmin_permission_set.all[each.value.permission_set].instance_arn} --account-assignment-deletion-request-id $REQUEST_ID | jq -r '.AccountAssignmentDeletionStatus.Status'`; echo Status=$STATUS; sleep 5; done && [ \"$STATUS\" = \"SUCCEEDED\" ]"
   }
 }
