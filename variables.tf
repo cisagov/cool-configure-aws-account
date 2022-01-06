@@ -5,12 +5,12 @@
 # ------------------------------------------------------------------------------
 variable "account_name_regex" {
   type        = string
-  description = "The Terraform regular expression matching the name of the account(s) that you want to configure (e.g. \"^[[:alnum:]]-production$\").  See https://www.terraform.io/language/functions/regex for details on Terraform regular expression syntax."
+  description = "The Terraform regular expression matching the name of the account(s) that you want to configure (e.g. \"^[[:alnum:]]-production$\").  See [https://www.terraform.io/language/functions/regex] for details on Terraform regular expression syntax."
 }
 
 variable "sso_admin_profile" {
   type        = string
-  description = "The name of the AWS profile (typically found in your .aws/credentials file) to use for the default Terraform provider.  This profile's role must include permissions to administer Single Sign-On (SSO) resources.  For an example of a role like this, look at https://github.com/cisagov/cool-accounts/pull/95."
+  description = "The name of the AWS profile (typically found in your .aws/credentials file) to use for the default Terraform provider.  This profile's role must include permissions to administer Single Sign-On (SSO) resources.  For an example of a role like this, look at [https://github.com/cisagov/cool-accounts/pull/95]."
 }
 
 # ------------------------------------------------------------------------------
