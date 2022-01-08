@@ -28,16 +28,18 @@ locals {
     if length(regexall(var.account_name_regex, account.name)) > 0
   ])
 
-  # Build the set of all group names in var.groups_to_add_access_to
-  all_groups = toset([for i in var.groups_to_add_access_to : i.group])
+  # Build the set of all group names in
+  # var.groups_to_add_access_to and var.groups_to_remove_access_from
+  all_groups = toset([for i in concat(var.groups_to_add_access_to, var.groups_to_remove_access_from) : i.group])
 
   # Build the set of all permission set names in the input variables
   all_permission_sets = toset(flatten([
-    for i in concat(var.groups_to_add_access_to, var.users_to_remove_access_from) : i.permission_sets
+    for i in concat(var.groups_to_add_access_to, var.groups_to_remove_access_from, var.users_to_add_access_to, var.users_to_remove_access_from) : i.permission_sets
   ]))
 
-  # Build the set of all usernames in var.users_to_remove_access_from
-  all_usernames = toset([for i in var.users_to_remove_access_from : i.username])
+  # Build the set of all usernames in
+  # var.users_to_add_access_to and var.users_to_remove_access_from
+  all_usernames = toset([for i in concat(var.users_to_add_access_to, var.users_to_remove_access_from) : i.username])
 
   # Build a list of groups to add access to (for each account to configure)
   # that can be fed into a for_each loop
@@ -47,6 +49,34 @@ locals {
         for ps in g.permission_sets : {
           account_id     = account
           group          = g.group
+          permission_set = ps
+        }
+      ]
+    ]
+  ])
+
+  # Build a list of groups to remove access from (for each account to
+  # configure) that can be fed into a for_each loop
+  groups_to_remove_access_from = flatten([
+    for account in local.accounts_to_configure : [
+      for g in var.groups_to_remove_access_from : [
+        for ps in g.permission_sets : {
+          account_id     = account
+          group          = g.group
+          permission_set = ps
+        }
+      ]
+    ]
+  ])
+
+  # Build a list of users to add access to (for each account to configure)
+  # that can be fed into a for_each loop
+  users_to_add_access_to = flatten([
+    for account in local.accounts_to_configure : [
+      for u in var.users_to_add_access_to : [
+        for ps in u.permission_sets : {
+          account_id     = account
+          user           = u.username
           permission_set = ps
         }
       ]
