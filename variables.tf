@@ -31,6 +31,18 @@ variable "groups_to_add_access_to" {
   default     = []
 }
 
+variable "groups_to_remove_access_from" {
+  type        = list(object({ group = string, permission_sets = list(string) }))
+  description = "A list of objects specifying Single Sign-On (SSO) groups to remove permissions from.  Each object contains the SSO group name and the list of permission sets to remove access from.  Example: [{ group = \"NonAdmins\", permission_sets = [\"AWSAdministratorAccess\"] }]"
+  default     = []
+}
+
+variable "users_to_add_access_to" {
+  type        = list(object({ username = string, permission_sets = list(string) }))
+  description = "A list of objects specifying Single Sign-On (SSO) users to add permissions to.  Each object contains the SSO username and the list of permission sets to add access to.  Example: [{ username = \"john.doe@example.com\", permission_sets = [\"AWSAdministratorAccess\"] }]"
+  default     = []
+}
+
 variable "users_to_remove_access_from" {
   type        = list(object({ username = string, permission_sets = list(string) }))
   description = "A list of objects specifying Single Sign-On (SSO) users to remove permissions from.  Each object contains the SSO username and the list of permission sets to remove access from.  Example: [{ username = \"john.doe@example.com\", permission_sets = [\"AWSAdministratorAccess\"] }]"
