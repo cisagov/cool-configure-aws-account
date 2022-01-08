@@ -20,7 +20,6 @@ locals {
   # as assume role session names.
   caller_user_name = split("/", data.aws_caller_identity.current.arn)[1]
 
-
   # Determine which AWS accounts in the organization to configure, based on
   # the account_name_regex input variable.
   accounts_to_configure = toset([
