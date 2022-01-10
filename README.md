@@ -103,6 +103,7 @@ No modules.
 | Name | Description |
 |------|-------------|
 | sso\_group\_assignments | The permission set assignments of each SSO group in each AWS account. |
+| sso\_user\_assignments | The permission set assignments of each SSO user in each AWS account. |
 
 ## Notes ##
 
