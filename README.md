@@ -74,6 +74,8 @@ No modules.
 | Name | Type |
 |------|------|
 | [aws_ssoadmin_account_assignment.group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
+| [aws_ssoadmin_account_assignment.user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
+| [null_resource.remove_group](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [null_resource.remove_user](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_identitystore_group.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/identitystore_group) | data source |
@@ -90,8 +92,10 @@ No modules.
 | account\_name\_regex | The Terraform regular expression matching the name of the account(s) that you want to configure (e.g. "^[[:alnum:]]-production$").  See [https://www.terraform.io/language/functions/regex] for details on Terraform regular expression syntax. | `string` | n/a | yes |
 | aws\_region | The AWS region to deploy into (e.g. us-east-1). | `string` | `"us-east-1"` | no |
 | groups\_to\_add\_access\_to | A list of objects specifying Single Sign-On (SSO) groups to add permissions to.  Each object contains the SSO group name and the list of permission sets to add access to.  Example: [{ group = "Admins", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ group = string, permission_sets = list(string) }))` | `[]` | no |
+| groups\_to\_remove\_access\_from | A list of objects specifying Single Sign-On (SSO) groups to remove permissions from.  Each object contains the SSO group name and the list of permission sets to remove access from.  Example: [{ group = "NonAdmins", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ group = string, permission_sets = list(string) }))` | `[]` | no |
 | sso\_admin\_profile | The name of the AWS profile (typically found in your .aws/credentials file) to use for the default Terraform provider.  This profile's role must include permissions to administer Single Sign-On (SSO) resources.  For an example of a role like this, look at [https://github.com/cisagov/cool-accounts/pull/95]. | `string` | n/a | yes |
 | tags | Tags to apply to all AWS resources created. | `map(string)` | `{}` | no |
+| users\_to\_add\_access\_to | A list of objects specifying Single Sign-On (SSO) users to add permissions to.  Each object contains the SSO username and the list of permission sets to add access to.  Example: [{ username = "john.doe@example.com", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ username = string, permission_sets = list(string) }))` | `[]` | no |
 | users\_to\_remove\_access\_from | A list of objects specifying Single Sign-On (SSO) users to remove permissions from.  Each object contains the SSO username and the list of permission sets to remove access from.  Example: [{ username = "john.doe@example.com", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ username = string, permission_sets = list(string) }))` | `[]` | no |
 
 ## Outputs ##
