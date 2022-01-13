@@ -8,6 +8,11 @@ variable "account_name_regex" {
   description = "The Terraform regular expression matching the name of the account(s) that you want to configure (e.g. \"^[[:alnum:]]-production$\").  See [https://www.terraform.io/language/functions/regex] for details on Terraform regular expression syntax."
 }
 
+variable "account_quota_profile" {
+  type        = string
+  description = "The name of the AWS profile (typically found in your .aws/credentials file) whose role has permissions to manage service quotas for the account to configure.  For an example of a role like this, look at TBD."
+}
+
 variable "sso_admin_profile" {
   type        = string
   description = "The name of the AWS profile (typically found in your .aws/credentials file) to use for the default Terraform provider.  This profile's role must include permissions to administer Single Sign-On (SSO) resources.  For an example of a role like this, look at [https://github.com/cisagov/cool-accounts/pull/95]."
@@ -34,6 +39,12 @@ variable "groups_to_add_access_to" {
 variable "groups_to_remove_access_from" {
   type        = list(object({ group = string, permission_sets = list(string) }))
   description = "A list of objects specifying Single Sign-On (SSO) groups to remove permissions from.  Each object contains the SSO group name and the list of permission sets to remove access from.  Example: [{ group = \"NonAdmins\", permission_sets = [\"AWSAdministratorAccess\"] }]"
+  default     = []
+}
+
+variable "service_quotas" {
+  type        = list(object({ name = string, quota_code = string, service_code = string, value = number }))
+  description = "A list of objects specifying service quotas to request.  Each object contains a name, quota code, service code, and value for the quota.  Example: [{ name = \"Elastic IPs\", quota_code = \"L-0263D0A3\", service_code = \"ec2\", value = 10 }]"
   default     = []
 }
 
