@@ -21,3 +21,15 @@ provider "aws" {
   }
   region = var.aws_region
 }
+
+# This is the provider that is used to manage service quotas for the
+# AWS account.
+provider "aws" {
+  alias = "quotas"
+  default_tags {
+    tags = var.tags
+  }
+
+  profile = var.account_quota_profile
+  region  = var.aws_region
+}
