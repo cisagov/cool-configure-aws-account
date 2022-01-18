@@ -2,6 +2,7 @@
 data "aws_identitystore_group" "all" {
   for_each = local.all_groups
 
+  # The identity_store_ids value is currently a set containing a single item
   identity_store_id = tolist(data.aws_ssoadmin_instances.current.identity_store_ids)[0]
 
   filter {

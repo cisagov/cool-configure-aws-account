@@ -15,6 +15,7 @@ for use in the COOL.
   [here](https://docs.aws.amazon.com/servicequotas/latest/userguide/identity-access-management.html)
   for more information).
 - [Terraform](https://www.terraform.io/) installed on your system.
+- The [AWS CLI](https://aws.amazon.com/cli/) installed on your system.
 - [jq](https://stedolan.github.io/jq/) installed on your system.
 - An accessible AWS S3 bucket to store Terraform state
   (specified in [`backend.tf`](backend.tf)).
