@@ -11,6 +11,7 @@ for use in the COOL.
   resources, similar to
   [this policy](https://github.com/cisagov/cool-accounts/blob/develop/master/administersso_policy.tf).
 - [Terraform](https://www.terraform.io/) installed on your system.
+- The [AWS CLI](https://aws.amazon.com/cli/) installed on your system.
 - [jq](https://stedolan.github.io/jq/) installed on your system.
 - An accessible AWS S3 bucket to store Terraform state
   (specified in [`backend.tf`](backend.tf)).
