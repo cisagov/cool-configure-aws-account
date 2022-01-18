@@ -1,5 +1,5 @@
 # This is the "default" provider that is used to manage resources
-# inside the AWS account used for Single Sign On (SSO).
+# inside the AWS account used for Single Sign-On (SSO).
 provider "aws" {
   default_tags {
     tags = var.tags
