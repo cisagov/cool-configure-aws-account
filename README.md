@@ -2,33 +2,53 @@
 
 [![GitHub Build Status](https://github.com/cisagov/cool-configure-aws-account/workflows/build/badge.svg)](https://github.com/cisagov/cool-configure-aws-account/actions)
 
-This is a generic skeleton project that can be used to quickly get a
-new [cisagov](https://github.com/cisagov) [Terraform
-module](https://www.terraform.io/docs/modules/index.html) GitHub
-repository started.  This skeleton project contains [licensing
-information](LICENSE), as well as [pre-commit
-hooks](https://pre-commit.com) and
-[GitHub Actions](https://github.com/features/actions) configurations
-appropriate for the major languages that we use.
+This repository contains Terraform code for configuring AWS accounts
+for use in the COOL.
 
-See [here](https://www.terraform.io/docs/modules/index.html) for more
-details on Terraform modules and the standard module structure.
+## Pre-requisites ##
+
+- A valid AWS profile that has permissions to administer Single Sign-On (SSO)
+  resources, similar to
+  [this policy](https://github.com/cisagov/cool-accounts/blob/develop/master/administersso_policy.tf).
+- [Terraform](https://www.terraform.io/) installed on your system.
+- The [AWS CLI](https://aws.amazon.com/cli/) installed on your system.
+- [jq](https://stedolan.github.io/jq/) installed on your system.
+- An accessible AWS S3 bucket to store Terraform state
+  (specified in [`backend.tf`](backend.tf)).
+- An accessible AWS DynamoDB database to store the Terraform state lock
+  (specified in [`backend.tf`](backend.tf)).
+- A Terraform [variables](variables.tf) file customized for the AWS account(s)
+  that you want to configure, for example:
+
+  ```hcl
+  account_name_regex = "^[[:alnum:]]-production$"
+  groups_to_add_access_to = [
+    {
+      group           = "Admins",
+      permission_sets = ["AWSAdministratorAccess"]
+    }
+  ]
+  sso_admin_profile = "AdministerSSO"
+  users_to_remove_access_from = [
+    {
+      username        = "john.doe@example.com",
+      permission_sets = ["AWSAdministratorAccess"]
+    }
+  ]
+  ```
 
 ## Usage ##
 
-```hcl
-module "example" {
-  source = "github.com/cisagov/cool-configure-aws-account"
+1. Create a Terraform workspace (if you haven't already done so) by running
+   `terraform workspace new <workspace_name>`.
+1. Create a `<workspace_name>.tfvars` file with all of the required
+   variables (see [Inputs](#Inputs) below for details).
+1. Run the command `terraform init`.
+1. Provision the new AWS account(s) by running the command:
 
-  aws_region            = "us-west-1"
-  aws_availability_zone = "b"
-  subnet_id             = "subnet-0123456789abcdef0"
-}
-```
-
-## Examples ##
-
-- [Basic usage](https://github.com/cisagov/cool-configure-aws-account/tree/develop/examples/basic_usage)
+   ```console
+   terraform apply -var-file=<workspace_name>.tfvars
+   ```
 
 ## Requirements ##
 
@@ -42,6 +62,9 @@ module "example" {
 | Name | Version |
 |------|---------|
 | aws | ~> 3.38 |
+| aws.organizationsreadonly | ~> 3.38 |
+| null | n/a |
+| terraform | n/a |
 
 ## Modules ##
 
@@ -51,41 +74,42 @@ No modules.
 
 | Name | Type |
 |------|------|
-| [aws_instance.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
-| [aws_ami.example](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ami) | data source |
-| [aws_default_tags.default](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/default_tags) | data source |
+| [aws_ssoadmin_account_assignment.group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
+| [aws_ssoadmin_account_assignment.user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
+| [null_resource.remove_group](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [null_resource.remove_user](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
+| [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_identitystore_group.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/identitystore_group) | data source |
+| [aws_identitystore_user.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/identitystore_user) | data source |
+| [aws_organizations_organization.org](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/organizations_organization) | data source |
+| [aws_ssoadmin_instances.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssoadmin_instances) | data source |
+| [aws_ssoadmin_permission_set.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/ssoadmin_permission_set) | data source |
+| [terraform_remote_state.master](https://registry.terraform.io/providers/hashicorp/terraform/latest/docs/data-sources/remote_state) | data source |
 
 ## Inputs ##
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| ami\_owner\_account\_id | The ID of the AWS account that owns the Example AMI, or "self" if the AMI is owned by the same account as the provisioner. | `string` | `"self"` | no |
-| aws\_availability\_zone | The AWS availability zone to deploy into (e.g. a, b, c, etc.). | `string` | `"a"` | no |
+| account\_name\_regex | The Terraform regular expression matching the name of the account(s) that you want to configure (e.g. "^[[:alnum:]]-production$").  See [https://www.terraform.io/language/functions/regex] for details on Terraform regular expression syntax. | `string` | n/a | yes |
 | aws\_region | The AWS region to deploy into (e.g. us-east-1). | `string` | `"us-east-1"` | no |
-| subnet\_id | The ID of the AWS subnet to deploy into (e.g. subnet-0123456789abcdef0). | `string` | n/a | yes |
+| groups\_to\_add\_access\_to | A list of objects specifying Single Sign-On (SSO) groups to add permissions to.  Each object contains the SSO group name and the list of permission sets to add access to.  Example: [{ group = "Admins", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ group = string, permission_sets = list(string) }))` | `[]` | no |
+| groups\_to\_remove\_access\_from | A list of objects specifying Single Sign-On (SSO) groups to remove permissions from.  Each object contains the SSO group name and the list of permission sets to remove access from.  Example: [{ group = "NonAdmins", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ group = string, permission_sets = list(string) }))` | `[]` | no |
+| sso\_admin\_profile | The name of the AWS profile (typically found in your .aws/credentials file) to use for the default Terraform provider.  This profile's role must include permissions to administer Single Sign-On (SSO) resources.  For an example of a role like this, look at [https://github.com/cisagov/cool-accounts/pull/95]. | `string` | n/a | yes |
+| tags | Tags to apply to all AWS resources created. | `map(string)` | `{}` | no |
+| users\_to\_add\_access\_to | A list of objects specifying Single Sign-On (SSO) users to add permissions to.  Each object contains the SSO username and the list of permission sets to add access to.  Example: [{ username = "john.doe@example.com", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ username = string, permission_sets = list(string) }))` | `[]` | no |
+| users\_to\_remove\_access\_from | A list of objects specifying Single Sign-On (SSO) users to remove permissions from.  Each object contains the SSO username and the list of permission sets to remove access from.  Example: [{ username = "john.doe@example.com", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ username = string, permission_sets = list(string) }))` | `[]` | no |
 
 ## Outputs ##
 
 | Name | Description |
 |------|-------------|
-| arn | The EC2 instance ARN. |
-| availability\_zone | The AZ where the EC2 instance is deployed. |
-| id | The EC2 instance ID. |
-| private\_ip | The private IP of the EC2 instance. |
-| subnet\_id | The ID of the subnet where the EC2 instance is deployed. |
+| sso\_group\_assignments | The permission set assignments of each SSO group in each AWS account. |
+| sso\_user\_assignments | The permission set assignments of each SSO user in each AWS account. |
 
 ## Notes ##
 
 Running `pre-commit` requires running `terraform init` in every directory that
-contains Terraform code. In this repository, these are the main directory and
-every directory under `examples/`.
-
-## New Repositories from a Skeleton ##
-
-Please see our [Project Setup guide](https://github.com/cisagov/development-guide/tree/develop/project_setup)
-for step-by-step instructions on how to start a new repository from
-a skeleton. This will save you time and effort when configuring a
-new repository!
+contains Terraform code. In this repository, this is only the main directory.
 
 ## Contributing ##
 
