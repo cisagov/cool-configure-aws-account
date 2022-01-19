@@ -10,7 +10,7 @@ variable "account_name_regex" {
 
 variable "account_quota_profile" {
   type        = string
-  description = "The name of the AWS profile (typically found in your .aws/credentials file) whose role has permissions to manage service quotas for the account to configure.  For an example of a role like this, look at TBD."
+  description = "The name of the AWS profile (typically found in your .aws/credentials file) whose role has permissions to manage service quotas for the account to configure.  For an example, look at the AWS \"ServiceQuotasFullAccess\" policy: [https://docs.aws.amazon.com/servicequotas/latest/userguide/identity-access-management.html]."
 }
 
 variable "sso_admin_profile" {
