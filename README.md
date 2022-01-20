@@ -13,7 +13,12 @@ for use in the COOL.
 - A valid AWS profile that has permissions to manage service quotas, similar
   to the AWS `ServiceQuotasFullAccess` policy (see
   [here](https://docs.aws.amazon.com/servicequotas/latest/userguide/identity-access-management.html)
-  for more information).
+  for more information).  If you used
+  [`cisagov/provisionaccount-role-tf-module`](https://github.com/cisagov/provisionaccount-role-tf-module)
+  to create your account-provisioning role, then
+  [that policy is
+  already attached](https://github.com/cisagov/provisionaccount-role-tf-module/blob/847a0b9c581d5b18ce8574fb4579765a15151462/provision_role.tf#L17-L21)
+  to your account-provisioning role.
 - [Terraform](https://www.terraform.io/) installed on your system.
 - The [AWS CLI](https://aws.amazon.com/cli/) installed on your system.
 - [jq](https://stedolan.github.io/jq/) installed on your system.
