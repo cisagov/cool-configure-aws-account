@@ -10,6 +10,15 @@ for use in the COOL.
 - A valid AWS profile that has permissions to administer Single Sign-On (SSO)
   resources, similar to
   [this policy](https://github.com/cisagov/cool-accounts/blob/develop/master/administersso_policy.tf).
+- A valid AWS profile that has permissions to manage service quotas, similar
+  to the AWS `ServiceQuotasFullAccess` policy (see
+  [here](https://docs.aws.amazon.com/servicequotas/latest/userguide/identity-access-management.html)
+  for more information).  If you used
+  [`cisagov/provisionaccount-role-tf-module`](https://github.com/cisagov/provisionaccount-role-tf-module)
+  to create your account-provisioning role, then
+  [that policy is
+  already attached](https://github.com/cisagov/provisionaccount-role-tf-module/blob/847a0b9c581d5b18ce8574fb4579765a15151462/provision_role.tf#L17-L21)
+  to your account-provisioning role.
 - [Terraform](https://www.terraform.io/) installed on your system.
 - The [AWS CLI](https://aws.amazon.com/cli/) installed on your system.
 - [jq](https://stedolan.github.io/jq/) installed on your system.
@@ -63,6 +72,7 @@ for use in the COOL.
 |------|---------|
 | aws | ~> 3.38 |
 | aws.organizationsreadonly | ~> 3.38 |
+| aws.quotas | ~> 3.38 |
 | null | n/a |
 | terraform | n/a |
 
@@ -74,6 +84,7 @@ No modules.
 
 | Name | Type |
 |------|------|
+| [aws_servicequotas_service_quota.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/servicequotas_service_quota) | resource |
 | [aws_ssoadmin_account_assignment.group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
 | [aws_ssoadmin_account_assignment.user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
 | [null_resource.remove_group](https://registry.terraform.io/providers/hashicorp/null/latest/docs/resources/resource) | resource |
@@ -91,9 +102,11 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | account\_name\_regex | The Terraform regular expression matching the name of the account(s) that you want to configure (e.g. "^[[:alnum:]]-production$").  See [https://www.terraform.io/language/functions/regex] for details on Terraform regular expression syntax. | `string` | n/a | yes |
+| account\_quota\_profile | The name of the AWS profile (typically found in your .aws/credentials file) whose role has permissions to manage service quotas for the account to configure.  For an example, look at the AWS "ServiceQuotasFullAccess" policy: [https://docs.aws.amazon.com/servicequotas/latest/userguide/identity-access-management.html]. | `string` | n/a | yes |
 | aws\_region | The AWS region to deploy into (e.g. us-east-1). | `string` | `"us-east-1"` | no |
 | groups\_to\_add\_access\_to | A list of objects specifying Single Sign-On (SSO) groups to add permissions to.  Each object contains the SSO group name and the list of permission sets to add access to.  Example: [{ group = "Admins", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ group = string, permission_sets = list(string) }))` | `[]` | no |
 | groups\_to\_remove\_access\_from | A list of objects specifying Single Sign-On (SSO) groups to remove permissions from.  Each object contains the SSO group name and the list of permission sets to remove access from.  Example: [{ group = "NonAdmins", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ group = string, permission_sets = list(string) }))` | `[]` | no |
+| service\_quotas | A list of objects specifying service quotas to request.  Each object contains a name, quota code, service code, and value for the quota.  Example: [{ name = "Elastic IPs", quota\_code = "L-0263D0A3", service\_code = "ec2", value = 10 }] | `list(object({ name = string, quota_code = string, service_code = string, value = number }))` | `[]` | no |
 | sso\_admin\_profile | The name of the AWS profile (typically found in your .aws/credentials file) to use for the default Terraform provider.  This profile's role must include permissions to administer Single Sign-On (SSO) resources.  For an example of a role like this, look at [https://github.com/cisagov/cool-accounts/pull/95]. | `string` | n/a | yes |
 | tags | Tags to apply to all AWS resources created. | `map(string)` | `{}` | no |
 | users\_to\_add\_access\_to | A list of objects specifying Single Sign-On (SSO) users to add permissions to.  Each object contains the SSO username and the list of permission sets to add access to.  Example: [{ username = "john.doe@example.com", permission\_sets = ["AWSAdministratorAccess"] }] | `list(object({ username = string, permission_sets = list(string) }))` | `[]` | no |
@@ -103,6 +116,7 @@ No modules.
 
 | Name | Description |
 |------|-------------|
+| service\_quotas | All requested service quotas. |
 | sso\_group\_assignments | The permission set assignments of each SSO group in each AWS account. |
 | sso\_user\_assignments | The permission set assignments of each SSO user in each AWS account. |
 
