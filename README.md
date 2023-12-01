@@ -59,20 +59,21 @@ for use in the COOL.
    terraform apply -var-file=<workspace_name>.tfvars
    ```
 
+<!-- BEGIN_TF_DOCS -->
 ## Requirements ##
 
 | Name | Version |
 |------|---------|
 | terraform | ~> 1.0 |
-| aws | ~> 3.38 |
+| aws | ~> 4.9 |
 
 ## Providers ##
 
 | Name | Version |
 |------|---------|
-| aws | ~> 3.38 |
-| aws.organizationsreadonly | ~> 3.38 |
-| aws.quotas | ~> 3.38 |
+| aws | ~> 4.9 |
+| aws.organizationsreadonly | ~> 4.9 |
+| aws.quotas | ~> 4.9 |
 | null | n/a |
 | terraform | n/a |
 
@@ -119,6 +120,7 @@ No modules.
 | service\_quotas | All requested service quotas. |
 | sso\_group\_assignments | The permission set assignments of each SSO group in each AWS account. |
 | sso\_user\_assignments | The permission set assignments of each SSO user in each AWS account. |
+<!-- END_TF_DOCS -->
 
 ## Notes ##
 
