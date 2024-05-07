@@ -25,9 +25,9 @@ variable "sso_admin_profile" {
 # ------------------------------------------------------------------------------
 
 variable "aws_region" {
-  type        = string
-  description = "The AWS region to deploy into (e.g. us-east-1)."
   default     = "us-east-1"
+  description = "The AWS region to deploy into (e.g. us-east-1)."
+  type        = string
 }
 
 variable "groups_to_add_access_to" {
