@@ -15,8 +15,20 @@ variable "account_quota_profile" {
   type        = string
 }
 
+variable "master_account_workspace" {
+  description = "The name of the Terraform workspace where the master account remote state is stored (e.g. \"production\").  This corresponds to the name of the environment where the master account was provisioned."
+  nullable    = false
+  type        = string
+}
+
 variable "sso_admin_profile" {
   description = "The name of the AWS profile (typically found in your .aws/credentials file) to use for the default Terraform provider.  This profile's role must include permissions to administer Single Sign-On (SSO) resources.  For an example of a role like this, look at [https://github.com/cisagov/cool-accounts/pull/95]."
+  nullable    = false
+  type        = string
+}
+
+variable "terraform_state_bucket" {
+  description = "The name of the S3 bucket where Terraform state is stored."
   nullable    = false
   type        = string
 }
