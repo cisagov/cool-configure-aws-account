@@ -9,6 +9,13 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 6.7"
     }
+
+    # We have verified that our code works with version 3.2.4 of this
+    # Terraform provider.
+    null = {
+      source  = "hashicorp/null"
+      version = "~> 3.2"
+    }
   }
 
   # Version 1.1 of Terraform is the first version to support the

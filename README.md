@@ -66,6 +66,7 @@ for use in the COOL.
 |------|---------|
 | terraform | ~> 1.1 |
 | aws | ~> 6.7 |
+| null | ~> 3.2 |
 
 ## Providers ##
 
@@ -74,7 +75,7 @@ for use in the COOL.
 | aws | ~> 6.7 |
 | aws.organizationsreadonly | ~> 6.7 |
 | aws.quotas | ~> 6.7 |
-| null | n/a |
+| null | ~> 3.2 |
 | terraform | n/a |
 
 ## Modules ##
