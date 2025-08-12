@@ -65,16 +65,17 @@ for use in the COOL.
 | Name | Version |
 |------|---------|
 | terraform | ~> 1.1 |
-| aws | ~> 4.9 |
+| aws | ~> 6.7 |
+| null | ~> 3.2 |
 
 ## Providers ##
 
 | Name | Version |
 |------|---------|
-| aws | ~> 4.9 |
-| aws.organizationsreadonly | ~> 4.9 |
-| aws.quotas | ~> 4.9 |
-| null | n/a |
+| aws | ~> 6.7 |
+| aws.organizationsreadonly | ~> 6.7 |
+| aws.quotas | ~> 6.7 |
+| null | ~> 3.2 |
 | terraform | n/a |
 
 ## Modules ##
