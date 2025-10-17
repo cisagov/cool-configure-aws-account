@@ -10,9 +10,9 @@ for use in the COOL.
 - A valid AWS profile that has permissions to administer Single Sign-On (SSO)
   resources, similar to
   [this policy](https://github.com/cisagov/cool-accounts/blob/develop/master/administersso_policy.tf).
-- A valid AWS profile that has permissions to manage service quotas, similar
-  to the AWS `ServiceQuotasFullAccess` policy (see
-  [here](https://docs.aws.amazon.com/servicequotas/latest/userguide/identity-access-management.html)
+- A valid AWS profile that has permissions to manage service quotas,
+  similar to the AWS `ServiceQuotasFullAccess` policy (see the [AWS
+  documentation](https://docs.aws.amazon.com/servicequotas/latest/userguide/identity-access-management.html)
   for more information).  If you used
   [`cisagov/provisionaccount-role-tf-module`](https://github.com/cisagov/provisionaccount-role-tf-module)
   to create your account-provisioning role, then
