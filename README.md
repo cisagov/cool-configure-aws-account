@@ -1,6 +1,8 @@
 # cool-configure-aws-account #
 
 [![GitHub Build Status](https://github.com/cisagov/cool-configure-aws-account/workflows/build/badge.svg)](https://github.com/cisagov/cool-configure-aws-account/actions)
+[![License](https://img.shields.io/github/license/cisagov/cool-configure-aws-account)](https://spdx.org/licenses/)
+[![CodeQL](https://github.com/cisagov/cool-configure-aws-account/workflows/CodeQL/badge.svg)](https://github.com/cisagov/cool-configure-aws-account/actions/workflows/codeql-analysis.yml)
 
 This repository contains Terraform code for configuring AWS accounts
 for use in the COOL.
