@@ -65,7 +65,7 @@ for use in the COOL.
 ## Requirements ##
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | terraform | ~> 1.1 |
 | aws | ~> 6.7 |
 | null | ~> 3.2 |
@@ -73,7 +73,7 @@ for use in the COOL.
 ## Providers ##
 
 | Name | Version |
-|------|---------|
+| ---- | ------- |
 | aws | ~> 6.7 |
 | aws.organizationsreadonly | ~> 6.7 |
 | aws.quotas | ~> 6.7 |
@@ -87,7 +87,7 @@ No modules.
 ## Resources ##
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_servicequotas_service_quota.all](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/servicequotas_service_quota) | resource |
 | [aws_ssoadmin_account_assignment.group](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
 | [aws_ssoadmin_account_assignment.user](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/ssoadmin_account_assignment) | resource |
@@ -104,7 +104,7 @@ No modules.
 ## Inputs ##
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
+| ---- | ----------- | ---- | ------- | :------: |
 | account\_name\_regex | The Terraform regular expression matching the name of the account(s) that you want to configure (e.g. "^[[:alnum:]]-production$").  See [https://www.terraform.io/language/functions/regex] for details on Terraform regular expression syntax. | `string` | n/a | yes |
 | account\_quota\_profile | The name of the AWS profile (typically found in your .aws/credentials file) whose role has permissions to manage service quotas for the account to configure.  For an example, look at the AWS "ServiceQuotasFullAccess" policy: [https://docs.aws.amazon.com/servicequotas/latest/userguide/identity-access-management.html]. | `string` | n/a | yes |
 | aws\_region | The AWS region to deploy into (e.g. us-east-1). | `string` | `"us-east-1"` | no |
@@ -121,7 +121,7 @@ No modules.
 ## Outputs ##
 
 | Name | Description |
-|------|-------------|
+| ---- | ----------- |
 | service\_quotas | All requested service quotas. |
 | sso\_group\_assignments | The permission set assignments of each SSO group in each AWS account. |
 | sso\_user\_assignments | The permission set assignments of each SSO user in each AWS account. |
